@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunar.sh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="bg-blur-overlay"></div>
+
+<div id="modal-overlay" class="overlay"></div>
+<div id="apod-modal" class="modal">
+    <button id="modal-close-button" class="modal-close-button">&times;</button>
+    <h2 id="apod-title"></h2>
+    <p id="apod-date"></p>
+    <div class="modal-content-container">
+        <p id="apod-explanation"></p>
+    </div>
+    <div id="apod-countdown-container">
+        <p id="apod-countdown"></p>
+    </div>
+    <p id="apod-copyright"></p>
+</div>
+
+<header id="header" class="header">
+    <h1>Lunar.sh</h1>
+    <p>The Moon...</p>
+    <div id="header-controls" class="header-controls">
+        <button id="set-location-button" class="info-button header-button">Set Location</button>
+        <button id="toggle-time-format-button" class="info-button header-button">Use 12H Time</button>
+        <button id="toggle-blur-button" class="info-button header-button">Remove Blur</button>
+    </div>
+</header>
+
+<main id="main-content">
+    <div class="loading-container" id="loading-spinner">
+        <div class="loader"></div>
+    </div>
+
+    <div id="dashboard" class="dashboard-container" style="display: none;">
+
+        <div class="card main-panel">
+            <div class="main-panel-phase">
+                <div id="moon-visual" class="moon-visual">
+                    <div id="moon-shadow" class="moon-shadow"></div>
+                </div>
+                <div class="main-display-text">
+                    <h2 id="phase-name"></h2>
+                    <p id="illumination"></p>
+                    <p id="moon-age"></p>
+                </div>
+            </div>
+            <div class="main-panel-distance">
+                <p class="label">Distance & Orbit</p>
+                <p class="value" id="distance-value"></p>
+                <div class="distance-bar-container">
+                    <span>Perigee</span>
+                    <div class="distance-bar">
+                        <div id="distance-indicator" class="distance-indicator"></div>
+                    </div>
+                    <span>Apogee</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="details-grid">
+
+            <div class="details-column">
+                <h3>Position & View</h3>
+                <div id="position-data" class="data-group"></div>
+                <div id="location-data" class="data-group"></div>
+            </div>
+
+            <div class="details-column">
+                <h3>Timing & Events</h3>
+                <div id="timing-data" class="data-group"></div>
+                <div id="next-phase-data" class="data-group"></div>
+            </div>
+
+            <div class="details-column">
+                <h3>Orbital Details</h3>
+                <div id="orbital-data" class="data-group"></div>
+            </div>
+
+        </div>
+
+        <div class="card" id="upcoming-phases-card"></div>
+
+    </div>
+</main>
+
+<footer>
+    <p>Celestial data powered by NASA APOD API & SunCalc.js.</p>
+    <div class="footer-buttons">
+        <button id="show-apod-info-button" class="info-button">Background Image Info</button>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
