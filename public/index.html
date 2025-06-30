@@ -11,11 +11,51 @@
 </head>
 <body>
 
+<div id="login-overlay" class="login-overlay">
+    <div class="login-container">
+        <div class="login-tabs">
+            <button id="show-login-tab" class="login-tab active">Login</button>
+            <button id="show-register-tab" class="login-tab">Register</button>
+        </div>
+
+        <form id="login-form" class="login-form active">
+            <h2>Welcome Back</h2>
+            <input type="text" id="login-username" placeholder="Username" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button type="submit">Login</button>
+            <p id="login-error" class="form-error"></p>
+        </form>
+
+        <form id="register-form" class="login-form">
+            <h2>Create Account</h2>
+            <input type="text" id="register-username" placeholder="Username" required>
+            <input type="password" id="register-password" placeholder="Password" required>
+            <input type="password" id="register-confirm-password" placeholder="Confirm Password" required>
+            <button type="submit">Register</button>
+            <p id="register-error" class="form-error"></p>
+        </form>
+    </div>
+</div>
+
+
 <div id="bg-blur-overlay"></div>
 
 <div id="modal-overlay" class="overlay"></div>
+<div id="account-modal" class="modal">
+    <button id="account-modal-close-button" class="modal-close-button">&times;</button>
+    <h2>My Account</h2>
+    <div class="modal-content-container">
+        <p>Hier können Sie Ihren persönlichen NASA API Key speichern.</p>
+        <div class="api-key-form">
+            <label for="api-key-input">NASA API Key:</label>
+            <input type="text" id="api-key-input" placeholder="Enter your key here">
+            <button id="save-api-key-button">Save Key</button>
+            <p id="api-key-success" class="form-success"></p>
+        </div>
+    </div>
+</div>
 <div id="apod-modal" class="modal">
-    <button id="modal-close-button" class="modal-close-button">&times;</button>
+    <button id="apod-modal-close-button" class="modal-close-button">&times;</button>
     <h2 id="apod-title"></h2>
     <p id="apod-date"></p>
     <div class="modal-content-container">
@@ -34,16 +74,16 @@
         <button id="set-location-button" class="info-button header-button">Set Location</button>
         <button id="toggle-time-format-button" class="info-button header-button">Use 12H Time</button>
         <button id="toggle-blur-button" class="info-button header-button">Remove Blur</button>
+        <button id="account-button" class="info-button header-button">Account</button>
+        <button id="logout-button" class="info-button header-button">Logout</button>
     </div>
 </header>
 
-<main id="main-content">
-    <div class="loading-container" id="loading-spinner">
-        <div class="loader"></div>
-    </div>
+<main id="main-content" style="visibility: hidden;"> <div class="loading-container" id="loading-spinner">
+    <div class="loader"></div>
+</div>
 
     <div id="dashboard" class="dashboard-container" style="display: none;">
-
         <div class="card main-panel">
             <div class="main-panel-phase">
                 <div id="moon-visual" class="moon-visual">
@@ -67,30 +107,23 @@
                 </div>
             </div>
         </div>
-
         <div class="details-grid">
-
             <div class="details-column">
                 <h3>Position & View</h3>
                 <div id="position-data" class="data-group"></div>
                 <div id="location-data" class="data-group"></div>
             </div>
-
             <div class="details-column">
                 <h3>Timing & Events</h3>
                 <div id="timing-data" class="data-group"></div>
                 <div id="next-phase-data" class="data-group"></div>
             </div>
-
             <div class="details-column">
                 <h3>Orbital Details</h3>
                 <div id="orbital-data" class="data-group"></div>
             </div>
-
         </div>
-
         <div class="card" id="upcoming-phases-card"></div>
-
     </div>
 </main>
 
