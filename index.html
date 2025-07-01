@@ -28,6 +28,25 @@
     <p id="apod-copyright"></p>
 </div>
 
+<div id="zodiac-modal-overlay" class="overlay"></div>
+<div id="zodiac-modal" class="modal">
+    <button id="zodiac-modal-close-button" class="modal-close-button">&times;</button>
+    <h2 id="zodiac-modal-title"></h2>
+    <p id="zodiac-modal-dates"></p>
+    <div class="modal-content-container">
+        <p id="zodiac-modal-description"></p>
+    </div>
+</div>
+
+<div id="satellite-modal-overlay" class="overlay"></div>
+<div id="satellite-modal" class="modal">
+    <button id="satellite-modal-close-button" class="modal-close-button">&times;</button>
+    <h2 id="satellite-modal-title"></h2>
+    <div id="satellite-modal-content" class="modal-content-container">
+    </div>
+</div>
+
+
 <header id="header" class="header">
     <h1>Lunar.sh</h1>
     <p>The Moon...</p>
@@ -70,24 +89,33 @@
         </div>
 
         <div class="details-grid">
-
             <div class="details-column">
                 <h3>Position & View</h3>
                 <div id="position-data" class="data-group"></div>
                 <div id="location-data" class="data-group"></div>
             </div>
-
             <div class="details-column">
                 <h3>Timing & Events</h3>
                 <div id="timing-data" class="data-group"></div>
                 <div id="next-phase-data" class="data-group"></div>
             </div>
-
             <div class="details-column">
                 <h3>Orbital Details</h3>
                 <div id="orbital-data" class="data-group"></div>
             </div>
+        </div>
 
+        <div class="secondary-grid">
+            <div class="details-column" id="satellite-card">
+                <h3>Satellite Systems</h3>
+                <div id="satellite-data" class="data-group">
+                    <p>Click to find satellites currently overhead.</p>
+                </div>
+            </div>
+            <div class="details-column">
+                <h3>Sun's Zodiac</h3>
+                <div id="zodiac-data" class="data-group"></div>
+            </div>
         </div>
 
         <div class="card" id="upcoming-phases-card"></div>
@@ -96,7 +124,7 @@
 </main>
 
 <footer>
-    <p>Celestial data powered by NASA APOD API & SunCalc.js.</p>
+    <p>Celestial data powered by NASA APOD API, SunCalc.js & N2YO.com.</p>
     <p>Favicon by Icons8</p>
     <div class="footer-buttons">
         <button id="show-apod-info-button" class="info-button">Background Image Info</button>
