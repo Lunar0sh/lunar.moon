@@ -38,15 +38,6 @@
     </div>
 </div>
 
-<div id="satellite-modal-overlay" class="overlay"></div>
-<div id="satellite-modal" class="modal">
-    <button id="satellite-modal-close-button" class="modal-close-button">&times;</button>
-    <h2 id="satellite-modal-title"></h2>
-    <div id="satellite-modal-content" class="modal-content-container">
-    </div>
-</div>
-
-
 <header id="header" class="header">
     <h1>Lunar.sh</h1>
     <p>The Moon...</p>
@@ -105,17 +96,9 @@
             </div>
         </div>
 
-        <div class="secondary-grid">
-            <div class="details-column" id="satellite-card">
-                <h3>Satellite Systems</h3>
-                <div id="satellite-data" class="data-group">
-                    <p>Click to find satellites currently overhead.</p>
-                </div>
-            </div>
-            <div class="details-column">
-                <h3>Sun's Zodiac</h3>
-                <div id="zodiac-data" class="data-group"></div>
-            </div>
+        <div class="card" id="zodiac-card">
+            <h3>Sun's Zodiac</h3>
+            <div id="zodiac-data" class="data-group"></div>
         </div>
 
         <div class="card" id="upcoming-phases-card"></div>
@@ -124,7 +107,7 @@
 </main>
 
 <footer>
-    <p>Celestial data powered by NASA APOD API, SunCalc.js & N2YO.com.</p>
+    <p>Celestial data powered by NASA APOD API & SunCalc.js.</p>
     <p>Favicon by Icons8</p>
     <div class="footer-buttons">
         <button id="show-apod-info-button" class="info-button">Background Image Info</button>
@@ -133,6 +116,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+<script src="config.js"></script>
 <script src="script.js"></script>
 
 </body>
