@@ -1,14 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- State, Constants & Data ---
-    const NASA_API_KEY = config.NASA_API_KEY;
-    const APOD_URL = `https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`;
-    const CACHE_PREFIX = 'apod_cache_';
-    const CACHE_DURATION_HOURS = 48;
-
     let is24HourFormat = true;
     let lastCalculatedSunTimes = null;
     let lastCalculatedMoonTimes = null;
-    // Standardstandort Rom. Wird nur durch Benutzereingabe geändert.
     let userCoords = { latitude: 41.9028, longitude: 12.4964 };
 
     const ZODIAC_DATA = {
@@ -26,38 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
         pisces: { name: 'Pisces', dates: 'Feb 19 - Mar 20', emoji: '♓', description: 'Represents dreams and healing. It is ruled by Neptune and Jupiter. Pisces are known for their empathy and artistic sensibilities.' },
     };
 
-    const ZODIAC_KEYS = Object.keys(ZODIAC_DATA);
-
     const elements = {
-        // Modals & Overlays
-        modalOverlay: document.getElementById('modal-overlay'),
-        apodModal: document.getElementById('apod-modal'),
         zodiacModalOverlay: document.getElementById('zodiac-modal-overlay'),
         zodiacModal: document.getElementById('zodiac-modal'),
-
-        // Modal Controls
-        modalCloseButton: document.getElementById('modal-close-button'),
         zodiacModalCloseButton: document.getElementById('zodiac-modal-close-button'),
-
-        // Modal Content
-        apodTitle: document.getElementById('apod-title'),
-        apodDate: document.getElementById('apod-date'),
-        apodExplanation: document.getElementById('apod-explanation'),
-        apodCopyright: document.getElementById('apod-copyright'),
         zodiacModalTitle: document.getElementById('zodiac-modal-title'),
         zodiacModalDates: document.getElementById('zodiac-modal-dates'),
         zodiacModalDescription: document.getElementById('zodiac-modal-description'),
-
-        // Core UI
         loadingSpinner: document.getElementById('loading-spinner'),
         dashboard: document.getElementById('dashboard'),
-        body: document.body,
-        showApodInfoButton: document.getElementById('show-apod-info-button'),
-        toggleBlurButton: document.getElementById('toggle-blur-button'),
         timeFormatButton: document.getElementById('toggle-time-format-button'),
         setLocationButton: document.getElementById('set-location-button'),
-
-        // Main Panel
         moonVisual: document.getElementById('moon-visual'),
         moonShadow: document.getElementById('moon-shadow'),
         phaseName: document.getElementById('phase-name'),
@@ -65,8 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
         moonAge: document.getElementById('moon-age'),
         distanceValue: document.getElementById('distance-value'),
         distanceIndicator: document.getElementById('distance-indicator'),
-
-        // Data Cards
         positionData: document.getElementById('position-data'),
         locationData: document.getElementById('location-data'),
         timingData: document.getElementById('timing-data'),
@@ -74,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         orbitalData: document.getElementById('orbital-data'),
         zodiacData: document.getElementById('zodiac-data'),
         upcomingPhasesCard: document.getElementById('upcoming-phases-card'),
-        apodCountdown: document.getElementById('apod-countdown'),
+        copyrightNotice: document.getElementById('copyright-notice'),
     };
 
     const updateDashboardWithSunCalc = (coords) => {
@@ -85,13 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const moonPosition = SunCalc.getMoonPosition(now, userCoords.latitude, userCoords.longitude);
             lastCalculatedSunTimes = SunCalc.getTimes(now, userCoords.latitude, userCoords.longitude);
             lastCalculatedMoonTimes = SunCalc.getMoonTimes(now, userCoords.latitude, userCoords.longitude);
-
             updateMainPanel(moonIllumination, moonPosition);
             updateDetailsColumns(moonPosition, lastCalculatedSunTimes, lastCalculatedMoonTimes);
             updateUpcomingPhases(now);
             updateZodiacCard(now);
             updateLocationCard();
-
             elements.loadingSpinner.style.display = 'none';
             elements.dashboard.style.display = 'block';
         } catch (error) {
@@ -99,17 +67,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- UI Update Functions ---
     const updateMainPanel = (illuminationData, positionData) => {
-        const phaseValue = illuminationData.phase;
-        elements.phaseName.textContent = getPhaseName(phaseValue);
+        const originalPhase = illuminationData.phase;
+        const snappedPhase = Math.round(originalPhase * 4) / 4;
+        elements.phaseName.textContent = getPhaseName(originalPhase);
         elements.illumination.textContent = `Illumination: ${(illuminationData.fraction * 100).toFixed(2)}%`;
-        elements.moonAge.textContent = `Age: ≈${(phaseValue * 29.53).toFixed(1)} days`;
-        const isWaning = phaseValue > 0.5;
-        const transformValue = (phaseValue - 0.5) * 2;
-        elements.moonShadow.style.transform = `translateX(${transformValue * -50}%) scaleX(${Math.abs(transformValue)})`;
-        elements.moonShadow.style.backgroundColor = isWaning ? '#fff' : '#1a1c3b';
-        elements.moonVisual.style.backgroundColor = isWaning ? '#1a1c3b' : '#fff';
+        elements.moonAge.textContent = `Age: ≈${(originalPhase * 29.53).toFixed(1)} days`;
+        let transformPercentage;
+        if (snappedPhase <= 0.5) {
+            const progress = snappedPhase / 0.5;
+            transformPercentage = progress * -100;
+        } else {
+            const progress = (snappedPhase - 0.5) / 0.5;
+            transformPercentage = progress * 100;
+        }
+        elements.moonShadow.style.transform = `translateX(${transformPercentage}%)`;
         const perigee = 363300, apogee = 405500;
         elements.distanceValue.textContent = `${Math.round(positionData.distance).toLocaleString()} km`;
         const percentage = Math.max(0, Math.min(100, ((positionData.distance - perigee) / (apogee - perigee)) * 100));
@@ -125,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.orbitalData.innerHTML = `<div class="data-item"><span class="label">Parallactic Angle</span><span class="value">${toDegrees(positionData.parallacticAngle)}°</span></div><div class="data-item"><span class="label">Angular Diameter</span><span class="value">${angularDiameter}"</span></div><div class="data-item"><span class="label">Avg. Perigee</span><span class="value">363,300 km</span></div><div class="data-item"><span class="label">Avg. Apogee</span><span class="value">405,500 km</span></div>`;
     };
 
-    // --- Reverted to SUN-based Zodiac calculation for stability ---
     const getSunZodiacKey = (date) => {
         const day = date.getDate();
         const month = date.getMonth() + 1;
@@ -148,87 +119,36 @@ document.addEventListener('DOMContentLoaded', () => {
         pastDate.setMonth(now.getMonth() - 1);
         const futureDate = new Date(now);
         futureDate.setMonth(now.getMonth() + 1);
-
         const lastSignKey = getSunZodiacKey(pastDate);
         const currentSignKey = getSunZodiacKey(now);
         const nextSignKey = getSunZodiacKey(futureDate);
-
         const createZodiacHTML = (signKey, label, isCurrent) => {
             const zodiacInfo = ZODIAC_DATA[signKey];
             const currentClass = isCurrent ? 'is-current' : '';
             return `<div class="zodiac-item-container ${currentClass}"><span class="label">${label}</span><div class="zodiac-clickable-area" data-zodiac="${signKey}"><div class="zodiac-icon">${zodiacInfo.emoji}</div><div class="zodiac-name">${zodiacInfo.name}</div></div></div>`;
         };
-
         elements.zodiacData.innerHTML = createZodiacHTML(lastSignKey, 'Last Sign', false) + createZodiacHTML(currentSignKey, 'Current Sign', true) + createZodiacHTML(nextSignKey, 'Next Sign', false);
-
         document.querySelectorAll('.zodiac-clickable-area').forEach(el => el.addEventListener('click', (e) => showZodiacInfo(e.currentTarget.dataset.zodiac)));
     };
 
-    // --- Modal Handlers ---
     const showZodiacInfo = (signKey) => {
         const zodiacInfo = ZODIAC_DATA[signKey];
-        elements.zodiacModalTitle.textContent = `${zodiacInfo.name}`;
+        elements.zodiacModalTitle.textContent = `${zodiacInfo.name} (Sun Sign)`;
         elements.zodiacModalDates.textContent = `(Sun Sign Dates: ${zodiacInfo.dates})`;
         elements.zodiacModalDescription.textContent = zodiacInfo.description;
         toggleZodiacModal();
     };
 
-    const toggleApodModal = () => { elements.modalOverlay.classList.toggle('visible'); elements.apodModal.classList.toggle('visible'); };
     const toggleZodiacModal = () => { elements.zodiacModalOverlay.classList.toggle('visible'); elements.zodiacModal.classList.toggle('visible'); };
 
-    // --- Caching and Data Fetching ---
-    const fetchApodData = async () => {
-        const today = new Date().toISOString().split('T')[0];
-        const cacheKey = `${CACHE_PREFIX}${today}`;
-        const cachedData = localStorage.getItem(cacheKey);
-
-        if (cachedData) {
-            const data = JSON.parse(cachedData);
-            updateBackgroundAndModal(data);
-            if (data.media_type === 'image') updateThemeFromImage(data.hdurl || data.url);
-            return;
-        }
-
-        try {
-            const response = await fetch(APOD_URL);
-            if (!response.ok) throw new Error(`NASA API Error: ${response.status}`);
-            const apodData = await response.json();
-            localStorage.setItem(cacheKey, JSON.stringify({ ...apodData, timestamp: new Date().getTime() }));
-            updateBackgroundAndModal(apodData);
-            if (apodData.media_type === 'image') updateThemeFromImage(apodData.hdurl || apodData.url);
-        } catch (error) {
-            console.error("Error fetching APOD data:", error);
-            elements.body.style.backgroundColor = "#0c0a1f";
-        }
-    };
-
-    const cleanupOldCache = () => {
-        const now = new Date().getTime();
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key.startsWith(CACHE_PREFIX)) {
-                try {
-                    const item = JSON.parse(localStorage.getItem(key));
-                    if (item && item.timestamp && (now - item.timestamp > CACHE_DURATION_HOURS * 60 * 60 * 1000)) {
-                        localStorage.removeItem(key);
-                    }
-                } catch (e) {
-                    localStorage.removeItem(key);
-                }
-            }
-        }
-    };
-
-    // --- Helper & Init Functions ---
     const getPhaseName = (phase) => { if (phase <= 0.03 || phase >= 0.97) return 'New Moon'; if (phase > 0.03 && phase < 0.22) return 'Waxing Crescent'; if (phase >= 0.22 && phase <= 0.28) return 'First Quarter'; if (phase > 0.28 && phase < 0.47) return 'Waxing Gibbous'; if (phase >= 0.47 && phase <= 0.53) return 'Full Moon'; if (phase > 0.53 && phase < 0.72) return 'Waning Gibbous'; if (phase >= 0.72 && phase <= 0.78) return 'Third Quarter'; return 'Waning Crescent'; };
     const formatTime = (date) => { if (!date || isNaN(date)) return 'N/A'; return date.toLocaleTimeString([], { hour: '2-digit', minute:'2-digit', hour12: !is24HourFormat }); };
 
-    const init = async () => {
-        cleanupOldCache();
-        await fetchApodData();
+    const init = () => {
+        const currentYear = new Date().getFullYear();
+        elements.copyrightNotice.innerHTML = `© ${currentYear} Lunar_sh.`;
         updateDashboardWithSunCalc(userCoords);
-        startApodCountdown();
-        setInterval(fetchApodData, 60 * 60 * 1000);
+        initStarAnimation();
     };
 
     const rerenderTimes = () => { if(lastCalculatedSunTimes && lastCalculatedMoonTimes) { elements.timingData.innerHTML = `<div class="data-item"><span class="label">Moonrise</span><span class="value">${formatTime(lastCalculatedMoonTimes.rise)}</span></div><div class="data-item"><span class="label">Solar Noon</span><span class="value">${formatTime(lastCalculatedSunTimes.solarNoon)}</span></div><div class="data-item"><span class="label">Moonset</span><span class="value">${formatTime(lastCalculatedMoonTimes.set)}</span></div>`; } };
@@ -261,86 +181,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const startApodCountdown = () => {
-        const countdownElement = elements.apodCountdown;
-        const updateTimer = () => {
-            const now = new Date();
-            let nextUpdate = new Date();
-            nextUpdate.setUTCHours(5, 0, 0, 0);
-            if (now.getTime() > nextUpdate.getTime()) nextUpdate.setDate(nextUpdate.getDate() + 1);
-            const diff = nextUpdate.getTime() - now.getTime();
-            if (diff <= 0) {
-                countdownElement.textContent = "New picture available now!";
-                return;
-            }
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24).toString().padStart(2, '0');
-            const minutes = Math.floor((diff / 1000 / 60) % 60).toString().padStart(2, '0');
-            const seconds = Math.floor((diff / 1000) % 60).toString().padStart(2, '0');
-            countdownElement.textContent = `Next picture in: ${hours}:${minutes}:${seconds}`;
-        };
-        setInterval(updateTimer, 1000);
-        updateTimer();
-    };
-
-    const updateThemeFromImage = (imageUrl) => {
-        const proxiedUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`;
-        const img = new Image();
-        img.crossOrigin = 'Anonymous';
-        img.src = proxiedUrl;
-        img.onload = () => {
-            try {
-                const colorThief = new ColorThief();
-                const dominantColor = colorThief.getColor(img);
-                const palette = colorThief.getPalette(img, 5);
-                const accentColor = palette[1] || dominantColor;
-                const root = document.documentElement;
-                root.style.setProperty('--card-color', `rgba(${dominantColor.join(',')}, 0.5)`);
-                root.style.setProperty('--border-color', `rgba(${accentColor.join(',')}, 0.3)`);
-                root.style.setProperty('--glow-color', `rgba(${accentColor.join(',')}, 0.1)`);
-                root.style.setProperty('--text-primary', getContrastingTextColor(dominantColor));
-                root.style.setProperty('--text-secondary', `rgba(${accentColor.join(',')}, 1)`);
-                root.style.setProperty('--accent-primary', `rgba(${palette[2] ? palette[2].join(',') : accentColor.join(',')}, 1)`);
-                root.style.setProperty('--accent-secondary', `rgba(${accentColor.join(',')}, 1)`);
-                root.style.setProperty('--distance-bar-color', `linear-gradient(to right, rgba(${accentColor.join(',')}, 0.7), rgba(${dominantColor.join(',')}, 1))`);
-            } catch(e) {
-                console.error("Could not apply theme from image.", e);
-            }
-        };
-        img.onerror = (err) => {
-            console.error("Could not load image for theming: ", err);
-        };
-    };
-
-    const getContrastingTextColor = (rgb) => {
-        const luminance = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255;
-        return luminance > 0.5 ? '#000000' : '#FFFFFF';
-    };
-
-    const updateBackgroundAndModal = (data) => {
-        if (data.media_type === "image") {
-            elements.body.style.backgroundImage = `url(${data.hdurl || data.url})`;
-        } else {
-            elements.body.style.backgroundColor = "#0c0a1f";
-        }
-        elements.apodTitle.textContent = data.title;
-        elements.apodDate.textContent = (new Date(data.date)).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-        elements.apodExplanation.textContent = data.explanation;
-        const copyright = data.copyright ? data.copyright.trim() : "";
-        if (copyright && copyright.toLowerCase() !== "public domain") {
-            elements.apodCopyright.textContent = `Copyright: ${copyright}`;
-        } else {
-            elements.apodCopyright.textContent = "Public Domain";
-        }
-    };
-
     const updateLocationCard = async () => {
         let content = '';
         if (userCoords.latitude === 41.9028 && userCoords.longitude === 12.4964) {
             content = `<div class="data-item"><span class="label">Location</span><span class="value">Rome, IT</span></div>`;
-        } else if (userCoords.latitude === 52.5200 && userCoords.longitude === 13.4050) {
-            content = `<div class="data-item"><span class="label">Location</span><span class="value">Berlin, DE</span></div>`;
-        }
-        else {
+        } else {
             try {
                 const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userCoords.latitude}&lon=${userCoords.longitude}`);
                 if (!response.ok) throw new Error('Reverse geocoding failed');
@@ -387,25 +232,99 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Event Listeners ---
-    elements.showApodInfoButton.addEventListener('click', toggleApodModal);
-    elements.modalCloseButton.addEventListener('click', toggleApodModal);
-    elements.modalOverlay.addEventListener('click', toggleApodModal);
+    const initStarAnimation = () => {
+        const canvas = document.getElementById('star-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const numParticles = window.innerWidth > 768 ? 150 : 70;
+
+        const resizeCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+
+        class Particle {
+            constructor(x, y, size, speedX, speedY) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.speedX = speedX;
+                this.speedY = speedY;
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+                this.x += this.speedX;
+                this.y += this.speedY;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const createParticles = () => {
+            particles = [];
+            for (let i = 0; i < numParticles; i++) {
+                const size = Math.random() * 1.5 + 0.5;
+                const x = Math.random() * (canvas.width - size * 2) + size;
+                const y = Math.random() * (canvas.height - size * 2) + size;
+                const speedX = (Math.random() * 0.4) - 0.2;
+                const speedY = (Math.random() * 0.4) - 0.2;
+                particles.push(new Particle(x, y, size, speedX, speedY));
+            }
+        };
+
+        const connectParticles = () => {
+            const maxDistance = 100;
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    const dx = particles[a].x - particles[b].x;
+                    const dy = particles[a].y - particles[b].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < maxDistance) {
+                        const opacity = 1 - (distance / maxDistance);
+                        ctx.strokeStyle = `rgba(200, 200, 255, ${opacity})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        };
+
+        const animate = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            connectParticles();
+            requestAnimationFrame(animate);
+        };
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            createParticles();
+        });
+
+        resizeCanvas();
+        createParticles();
+        animate();
+    };
 
     elements.zodiacModalCloseButton.addEventListener('click', toggleZodiacModal);
     elements.zodiacModalOverlay.addEventListener('click', toggleZodiacModal);
-
-    elements.toggleBlurButton.addEventListener('click', () => {
-        elements.body.classList.toggle('blur-off');
-        elements.toggleBlurButton.textContent = elements.body.classList.contains('blur-off') ? 'Add Blur' : 'Remove Blur';
-    });
-
     elements.timeFormatButton.addEventListener('click', () => {
         is24HourFormat = !is24HourFormat;
         rerenderTimes();
         elements.timeFormatButton.textContent = is24HourFormat ? 'Use 12H Time' : 'Use 24H Time';
     });
-
     elements.setLocationButton.addEventListener('click', handleSetLocation);
 
     init();

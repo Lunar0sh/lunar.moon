@@ -1,4 +1,3 @@
-/* --- Basic Setup & Fonts --- */
 :root {
     --bg-color: #0c0a1f;
     --card-color: rgba(26, 28, 59, 0.6);
@@ -14,39 +13,66 @@
 body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
-    background-color: var(--bg-color);
+    background: linear-gradient(135deg, #1a1c3b 0%, #3e1e68 100%);
     color: var(--text-primary);
     font-size: 16px;
-    background-size: cover;
-    background-position: center center;
     background-attachment: fixed;
-    transition: background-image 1s ease-in-out;
 }
 
-/* --- Blur Overlay --- */
-#bg-blur-overlay {
+#star-canvas {
     position: fixed;
-    inset: 0;
-    pointer-events: none;
-    backdrop-filter: blur(10px);
-    transition: backdrop-filter 0.5s ease;
-    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
 }
 
-body.blur-off #bg-blur-overlay {
-    backdrop-filter: blur(0px);
+.header, main, footer {
+    position: relative;
+    z-index: 2;
 }
 
-/* --- Layout --- */
-.header { padding: 2.5rem 1rem; text-align: center; position: relative; z-index: 2; }
-.header-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
-main { padding: 1.5rem; position: relative; z-index: 2; }
-.dashboard-container { max-width: 1280px; margin: auto; animation: fadeIn 0.5s ease-out forwards; }
-footer { position: relative; z-index: 2; text-align: center; padding: 2rem 1rem; color: #c7d2fe; font-size: 0.9rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
+.header {
+    padding: 2.5rem 1rem;
+    text-align: center;
+}
 
-/* --- Base Card Style --- */
+.header-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+main {
+    padding: 1.5rem;
+}
+
+.dashboard-container {
+    max-width: 1280px;
+    margin: auto;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #c7d2fe;
+    font-size: 0.9rem;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
 .card {
     background-color: var(--card-color);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     padding: 1.5rem;
     border-radius: 1.25rem;
     box-shadow: 0 0 40px var(--glow-color), 0 0 10px var(--glow-color) inset;
@@ -54,13 +80,13 @@ footer { position: relative; z-index: 2; text-align: center; padding: 2rem 1rem;
     transition: transform 0.3s, box-shadow 0.3s, background-color 0.5s, border-color 0.3s;
     margin-top: 1.5rem;
 }
+
 .card:hover {
     transform: translateY(-6px) scale(1.02);
     box-shadow: 0 0 60px var(--glow-color), 0 0 22px var(--glow-color) inset;
     border-color: rgba(199, 210, 254, 0.6);
 }
 
-/* --- Layout Grids --- */
 .details-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -68,78 +94,453 @@ footer { position: relative; z-index: 2; text-align: center; padding: 2rem 1rem;
     margin-top: 1.5rem;
 }
 
-/* --- Main Panel & Details Columns --- */
-.main-panel { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 2rem; padding: 2rem; }
-.main-panel-phase { display: flex; align-items: center; gap: 2rem; flex-grow: 1; }
-.main-panel-distance { min-width: 300px; flex-grow: 1; text-align: right; }
-.main-panel-distance .label { font-size: 1rem; }
-.main-panel-distance .value { font-size: 2.5rem; margin: 0; }
-.details-column { background-color: var(--card-color); border-radius: 1.25rem; padding: 1.5rem; border: 1px solid var(--border-color); transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; margin-top: 0; }
-.details-column:hover { transform: translateY(-6px); box-shadow: 0 0 60px var(--glow-color); border-color: rgba(199, 210, 254, 0.6); }
-.details-column h3, #zodiac-card h3 { margin: 0 0 1.5rem 0; font-family: 'Orbitron', sans-serif; color: var(--accent-primary); font-weight: 500; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; }
-.data-group { margin-bottom: 1.5rem; }
-.data-item { display: flex; justify-content: space-between; align-items: baseline; padding: 0.5rem 0; border-bottom: 1px solid rgba(165, 180, 252, 0.05); }
-.data-item:last-child { border-bottom: none; }
-.data-item .label { opacity: 0.8; }
-.data-item .value { margin: 0; font-size: 1.2rem; font-weight: 500; text-align: right; }
+.main-panel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+}
 
-/* --- Typography --- */
-h1, h2, .value { font-family: 'Orbitron', sans-serif; }
-.header h1 { font-size: 3.5rem; font-weight: 700; text-shadow: 0 0 15px rgba(224, 231, 255, 0.7); margin: 0; color: white; }
-.header p { font-size: 1.25rem; color: var(--accent-primary); margin-top: 0.5rem; text-shadow: 0 1px 3px rgba(0,0,0,0.7); }
-#phase-name { font-size: 2rem; font-weight: 700; color: var(--accent-primary); margin: 0; }
-#illumination, #moon-age { font-size: 1rem; color: var(--text-secondary); margin: 0.25rem 0; }
-.label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
-.value { font-weight: 700; color: var(--text-primary); }
+.main-panel-phase {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-shrink: 0;
+}
 
-/* --- Moon Visual & Distance Bar --- */
-.moon-visual { width: 100px; height: 100px; border-radius: 50%; background-color: white; flex-shrink: 0; overflow: hidden; box-shadow: 0 0 30px #fff, 0 0 60px #e0e7ff; position: relative; }
-.moon-shadow { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #1a1c3b; border-radius: 50%; transition: transform 0.5s ease-in-out; }
-.distance-bar-container { width: 100%; font-size: 0.75rem; display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; color: var(--text-secondary); }
-.distance-bar { flex-grow: 1; height: 8px; background-color: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden; }
-.distance-indicator { width: 0%; height: 100%; background-image: var(--distance-bar-color); border-radius: 4px; transition: width 0.5s, background-image 0.5s; }
+.main-panel-distance {
+    min-width: 300px;
+    text-align: right;
+    flex-grow: 1;
+    margin-left: auto;
+}
 
-/* --- Enhanced Zodiac Display --- */
-#zodiac-card .data-group { display: flex; justify-content: space-around; align-items: flex-start; gap: 1rem; padding: 1rem 0; }
-.zodiac-item-container { flex: 1; text-align: center; }
-.zodiac-item-container .label { font-size: 0.8rem; margin-bottom: 1.5rem; display: block; letter-spacing: 0.1em; opacity: 0.7; }
-.zodiac-clickable-area { display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 1rem; border-radius: 1.5rem; transition: background-color 0.3s; }
-.zodiac-clickable-area:hover { background-color: rgba(129, 140, 248, 0.1); }
-.zodiac-icon { font-size: 3.5rem; line-height: 1; margin-bottom: 1rem; text-shadow: 0 0 15px var(--accent-secondary); }
-.zodiac-name { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: var(--text-primary); }
-.zodiac-item-container.is-current .zodiac-name { font-size: 1.5rem; color: var(--accent-primary); }
-.zodiac-item-container.is-current .zodiac-icon { font-size: 4.5rem; }
-.zodiac-item-container.is-current .label { opacity: 1; color: var(--accent-primary); }
+.main-panel-distance .label {
+    font-size: 1rem;
+}
 
-/* --- Upcoming Phases Grid --- */
-.upcoming-phases-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1.5rem; text-align: center; width: 100%;}
-.upcoming-phase-item { display: flex; flex-direction: column; align-items: center; }
-.phase-icon { width: 50px; height: 50px; border-radius: 50%; margin-bottom: 0.75rem; position: relative; overflow: hidden; background-color: #fff; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
-.phase-icon::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #1a1c3b; border-radius: 50%; }
-.phase-icon.new-moon { background-color: #1a1c3b; }
-.phase-icon.full-moon { background-color: #fff; box-shadow: 0 0 15px #fff, 0 0 25px #e0e7ff; }
-.phase-icon.full-moon::after { display: none; }
-.phase-icon.first-quarter::after { transform: translateX(-50%); }
-.phase-icon.third-quarter::after { transform: translateX(50%); }
+.main-panel-distance .value {
+    font-size: 2.5rem;
+    margin: 0;
+}
 
-/* --- Other Components (Loader, Modal, Buttons) --- */
-.loader { width: 4rem; height: 4rem; border: 5px dashed var(--accent-secondary); border-radius: 50%; animation: rotation 1.5s linear infinite; }
-.loading-container { display: flex; align-items: center; justify-content: center; min-height: 50vh; }
-@keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.overlay { position: fixed; inset: 0; background-color: rgba(12, 10, 31, 0.7); backdrop-filter: blur(8px); z-index: 998; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
-.overlay.visible { opacity: 1; visibility: visible; }
-.modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95); background-color: var(--card-color); border: 1px solid var(--border-color); border-radius: 1rem; padding: 2rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); z-index: 999; width: 90%; max-width: 600px; max-height: 80vh; display: flex; flex-direction: column; opacity: 0; visibility: hidden; transition: all 0.3s; }
-.modal.visible { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
-.modal-content-container { overflow-y: auto; margin: 1rem 0; line-height: 1.7; }
-.modal-close-button { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer; }
-.modal h2 { margin: 0; color: var(--accent-primary); font-family: 'Orbitron', sans-serif; }
-.modal p { margin: 0.5rem 0; line-height: 1.6; }
-#apod-countdown-container { border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1rem; text-align: center; }
-#apod-countdown { color: var(--text-secondary); font-family: 'Orbitron', sans-serif; font-size: 0.9rem; letter-spacing: 0.05em; opacity: 0.8; }
-.modal #apod-copyright { font-size: 0.8rem; font-style: italic; color: var(--text-secondary); margin-top: auto; padding-top: 1rem; opacity: 0.7; }
-.footer-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; }
-.info-button { background-color: rgba(26, 28, 59, 0.6); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.75rem 1.5rem; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-family: 'Orbitron'; }
-.info-button:hover { background-color: var(--card-color); color: var(--text-primary); border-color: var(--accent-secondary); }
-.header-button { padding: 0.5rem 1rem; font-size: 0.8rem; }
-#show-apod-info-button { min-width: 220px; }
+.details-column {
+    background-color: var(--card-color);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    margin-top: 0;
+}
+
+.details-column:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 60px var(--glow-color);
+    border-color: rgba(199, 210, 254, 0.6);
+}
+
+.details-column h3, #zodiac-card h3 {
+    margin: 0 0 1.5rem 0;
+    font-family: 'Orbitron', sans-serif;
+    color: var(--accent-primary);
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+}
+
+.data-group {
+    margin-bottom: 1.5rem;
+}
+
+.data-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(165, 180, 252, 0.05);
+}
+
+.data-item:last-child {
+    border-bottom: none;
+}
+
+.data-item .label {
+    opacity: 0.8;
+}
+
+.data-item .value {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-align: right;
+}
+
+h1, h2, .value {
+    font-family: 'Orbitron', sans-serif;
+}
+
+.header h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    text-shadow: 0 0 15px rgba(224, 231, 255, 0.7);
+    margin: 0;
+    color: white;
+}
+
+.header p {
+    font-size: 1.25rem;
+    color: var(--accent-primary);
+    margin-top: 0.5rem;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+}
+
+#phase-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+    margin: 0;
+}
+
+#illumination, #moon-age {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin: 0.25rem 0;
+}
+
+.label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.value {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.moon-visual {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: relative;
+    background-color: white;
+    box-shadow: 0 0 35px rgba(255, 255, 255, 0.4), inset 5px -5px 10px rgba(0,0,0,0.2);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.moon-shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: transparent;
+    transition: transform 0.5s ease-in-out;
+}
+
+.moon-shadow::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #1a1c3b;
+    box-shadow: inset 0 0 20px 10px rgba(0,0,0,0.9);
+}
+
+.distance-bar-container {
+    width: 100%;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    color: var(--text-secondary);
+}
+
+.distance-bar {
+    flex-grow: 1;
+    height: 8px;
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.distance-indicator {
+    width: 0%;
+    height: 100%;
+    background-image: var(--distance-bar-color);
+    border-radius: 4px;
+    transition: width 0.5s, background-image 0.5s;
+}
+
+#zodiac-card .data-group {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.zodiac-item-container {
+    flex: 1;
+    text-align: center;
+}
+
+.zodiac-item-container .label {
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+    display: block;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+}
+
+.zodiac-clickable-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 1rem;
+    border-radius: 1.5rem;
+    transition: background-color 0.3s;
+}
+
+.zodiac-clickable-area:hover {
+    background-color: rgba(129, 140, 248, 0.1);
+}
+
+.zodiac-icon {
+    font-size: 3.5rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 15px var(--accent-secondary);
+}
+
+.zodiac-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+}
+
+.zodiac-item-container.is-current .zodiac-name {
+    font-size: 1.5rem;
+    color: var(--accent-primary);
+}
+
+.zodiac-item-container.is-current .zodiac-icon {
+    font-size: 4.5rem;
+}
+
+.zodiac-item-container.is-current .label {
+    opacity: 1;
+    color: var(--accent-primary);
+}
+
+.upcoming-phases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1.5rem;
+    text-align: center;
+    width: 100%;
+}
+
+.upcoming-phase-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.phase-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 0.75rem;
+    position: relative;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: inset 2px -2px 5px rgba(0,0,0,0.2);
+}
+
+.phase-icon::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #1a1c3b;
+}
+
+.phase-icon.new-moon {
+    background-color: #1a1c3b;
+}
+
+.phase-icon.full-moon::after {
+    display: none;
+}
+
+.phase-icon.first-quarter::after {
+    transform: translateX(-50%);
+}
+
+.phase-icon.third-quarter::after {
+    transform: translateX(50%);
+}
+
+.phase-icon.waxing-crescent::after {
+    transform: translateX(-75%);
+}
+
+.phase-icon.waning-crescent::after {
+    transform: translateX(75%);
+}
+
+.phase-icon.waxing-gibbous {
+    background-color: #1a1c3b;
+}
+
+.phase-icon.waxing-gibbous::after {
+    background-color: white;
+    transform: translateX(-25%);
+}
+
+.phase-icon.waning-gibbous {
+    background-color: #1a1c3b;
+}
+
+.phase-icon.waning-gibbous::after {
+    background-color: white;
+    transform: translateX(25%);
+}
+
+.loader {
+    width: 4rem;
+    height: 4rem;
+    border: 5px dashed var(--accent-secondary);
+    border-radius: 50%;
+    animation: rotation 1.5s linear infinite;
+}
+
+.loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(12, 10, 31, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    background-color: var(--card-color);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    z-index: 999;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.modal.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-content-container {
+    overflow-y: auto;
+    margin: 1rem 0;
+    line-height: 1.7;
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.modal h2 {
+    margin: 0;
+    color: var(--accent-primary);
+    font-family: 'Orbitron', sans-serif;
+}
+
+.modal p {
+    margin: 0.5rem 0;
+    line-height: 1.6;
+}
+
+.footer-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.info-button {
+    background-color: rgba(26, 28, 59, 0.6);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Orbitron';
+}
+
+.info-button:hover {
+    background-color: var(--card-color);
+    color: var(--text-primary);
+    border-color: var(--accent-secondary);
+}
+
+.header-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+}

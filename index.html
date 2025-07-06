@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lunar.sh</title>
+    <title>Lunar.Moon</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/ios/100/moon-symbol.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,21 +12,7 @@
 </head>
 <body>
 
-<div id="bg-blur-overlay"></div>
-
-<div id="modal-overlay" class="overlay"></div>
-<div id="apod-modal" class="modal">
-    <button id="modal-close-button" class="modal-close-button">&times;</button>
-    <h2 id="apod-title"></h2>
-    <p id="apod-date"></p>
-    <div class="modal-content-container">
-        <p id="apod-explanation"></p>
-    </div>
-    <div id="apod-countdown-container">
-        <p id="apod-countdown"></p>
-    </div>
-    <p id="apod-copyright"></p>
-</div>
+<canvas id="star-canvas"></canvas>
 
 <div id="zodiac-modal-overlay" class="overlay"></div>
 <div id="zodiac-modal" class="modal">
@@ -39,12 +25,11 @@
 </div>
 
 <header id="header" class="header">
-    <h1>Lunar.sh</h1>
+    <h1>Lunar.Moon</h1>
     <p>The Moon...</p>
     <div id="header-controls" class="header-controls">
         <button id="set-location-button" class="info-button header-button">Set Location</button>
         <button id="toggle-time-format-button" class="info-button header-button">Use 12H Time</button>
-        <button id="toggle-blur-button" class="info-button header-button">Remove Blur</button>
     </div>
 </header>
 
@@ -107,16 +92,13 @@
 </main>
 
 <footer>
-    <p>Celestial data powered by NASA APOD API & SunCalc.js.</p>
-    <p>Favicon by Icons8</p>
-    <div class="footer-buttons">
-        <button id="show-apod-info-button" class="info-button">Background Image Info</button>
+    <div class="footer-content">
+        <p id="copyright-notice"></p>
+        <p>Celestial data powered by SunCalc.js. | Favicon by Icons8</p>
     </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
-<script src="config.js"></script>
 <script src="script.js"></script>
 
 </body>
